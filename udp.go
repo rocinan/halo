@@ -13,7 +13,6 @@ func (u *UDP) Listen(sa *Addr) (PConn, error) {
 	if fd, err := unix.Socket(unix.AF_INET, unix.SOCK_DGRAM, unix.IPPROTO_UDP); err != nil {
 		return nil, err
 	} else {
-		defer unix.SetNonblock(fd, true)
 		defer unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_REUSEPORT, 1)
 		if err := unix.Bind(fd, sa.ToSockaddrInet4()); err != nil {
 			return nil, err
@@ -26,7 +25,6 @@ func (u *UDP) Dial(sa *Addr) (PConn, error) {
 	if fd, err := unix.Socket(unix.AF_INET, unix.SOCK_DGRAM, 0); err != nil {
 		return nil, err
 	} else {
-		defer unix.SetNonblock(fd, true)
 		return &UDP{Fd: fd, Ra: sa.ToSockaddrInet4()}, nil
 	}
 }

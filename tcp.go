@@ -10,7 +10,6 @@ func (t *TCP) Listen(sa *Addr) (SConn, error) {
 	if fd, err := unix.Socket(unix.AF_INET, unix.SOCK_STREAM, unix.IPPROTO_TCP); err != nil {
 		return nil, err
 	} else {
-		defer unix.SetNonblock(fd, true)
 		defer unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_REUSEPORT, 1)
 		if err := unix.Bind(fd, sa.ToSockaddrInet4()); err != nil {
 			return nil, err
@@ -35,7 +34,6 @@ func (t *TCP) Dial(sa *Addr) (Conn, error) {
 	if fd, err := unix.Socket(unix.AF_INET, unix.SOCK_STREAM, unix.IPPROTO_TCP); err != nil {
 		return nil, err
 	} else {
-		defer unix.SetNonblock(fd, true)
 		if err = unix.Connect(fd, sa.ToSockaddrInet4()); err != nil {
 			return nil, err
 		}
